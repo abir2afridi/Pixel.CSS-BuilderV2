@@ -118,13 +118,26 @@ export const useBuilderStore = create<BuilderState & BuilderActions>((set, get) 
     if (PIXEL_PRESETS[name]) {
       const { pixels, history } = get();
       const newHistory = [...history, { ...pixels }].slice(-MAX_HISTORY);
-      set({
+      const next: Partial<BuilderState> = {
         pixels: { ...PIXEL_PRESETS[name] },
         flickerCells: PRESET_FLICKER[name] ? { ...PRESET_FLICKER[name] } : {},
         pupilCells: PRESET_PUPILS[name] ? { ...PRESET_PUPILS[name] } : {},
         history: newHistory,
         future: [],
-      });
+      };
+      if (name === "flame") {
+        next.activePreset = "wave";
+        next.animParams = { speed: 350, floatHeight: 4, scale: 1.0, rotation: 0, timing: "ease-in-out" };
+      }
+      if (name === "explosion") {
+        next.activePreset = "pulse";
+        next.animParams = { speed: 200, floatHeight: 0, scale: 1.15, rotation: 0, timing: "ease-in-out" };
+      }
+      if (name === "vampire") {
+        next.activePreset = "pulse";
+        next.animParams = { speed: 500, floatHeight: 0, scale: 1.05, rotation: 0, timing: "ease-in-out" };
+      }
+      set(next);
     }
   },
 

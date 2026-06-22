@@ -886,23 +886,90 @@ function buildLightningPixels(color: string): PixelMap {
 
 function buildFlamePixels(color: string): PixelMap {
   const m: PixelMap = {};
-  // Tip
-  [[1, 6], [1, 7]].forEach(([r, c]) => { m[`${r},${c}`] = color; });
-  [[2, 5], [2, 6], [2, 7], [2, 8]].forEach(([r, c]) => { m[`${r},${c}`] = color; });
-  [[3, 4], [3, 5], [3, 6], [3, 7], [3, 8], [3, 9]].forEach(([r, c]) => { m[`${r},${c}`] = color; });
-  [[4, 3], [4, 4], [4, 5], [4, 6], [4, 7], [4, 8], [4, 9], [4, 10]].forEach(([r, c]) => { m[`${r},${c}`] = color; });
-  [[5, 3], [5, 4], [5, 5], [5, 6], [5, 7], [5, 8], [5, 9], [5, 10]].forEach(([r, c]) => { m[`${r},${c}`] = color; });
-  [[6, 3], [6, 4], [6, 5], [6, 6], [6, 7], [6, 8], [6, 9], [6, 10]].forEach(([r, c]) => { m[`${r},${c}`] = color; });
-  [[7, 2], [7, 3], [7, 4], [7, 5], [7, 6], [7, 7], [7, 8], [7, 9], [7, 10], [7, 11]].forEach(([r, c]) => { m[`${r},${c}`] = color; });
-  [[8, 2], [8, 3], [8, 4], [8, 5], [8, 6], [8, 7], [8, 8], [8, 9], [8, 10], [8, 11]].forEach(([r, c]) => { m[`${r},${c}`] = color; });
-  [[9, 3], [9, 4], [9, 5], [9, 6], [9, 7], [9, 8], [9, 9], [9, 10]].forEach(([r, c]) => { m[`${r},${c}`] = color; });
-  [[10, 4], [10, 5], [10, 6], [10, 7], [10, 8], [10, 9]].forEach(([r, c]) => { m[`${r},${c}`] = color; });
-  [[11, 5], [11, 6], [11, 7], [11, 8]].forEach(([r, c]) => { m[`${r},${c}`] = color; });
-  [[12, 6], [12, 7]].forEach(([r, c]) => { m[`${r},${c}`] = color; });
-  // Inner bright core
-  [[5, 6], [5, 7], [6, 6], [6, 7], [7, 5], [7, 6], [7, 7], [7, 8], [8, 5], [8, 6], [8, 7], [8, 8]].forEach(([r, c]) => { m[`${r},${c}`] = "#ef9f27"; });
-  // White hot center
-  [[6, 6], [6, 7], [7, 6], [7, 7]].forEach(([r, c]) => { m[`${r},${c}`] = "#ffffff"; });
+  const R1 = "#ff2200";
+  const R2 = "#ff4500";
+  const O = "#ff8c00";
+  const Y = "#ffd700";
+  const W = "#ffff80";
+  const CORE = "#ffffff";
+  const EMBER = "#ff8c00";
+
+  // Multi-tongue campfire — two peaks, wide body, irregular edges
+  const outer1: [number, number][] = [
+    // Left tongue (tall)
+    [2, 5], [2, 6],
+    [3, 4], [3, 5], [3, 6], [3, 7],
+    [4, 3], [4, 4], [4, 5], [4, 6], [4, 7], [4, 8],
+    [5, 2], [5, 3], [5, 4], [5, 5], [5, 6], [5, 7], [5, 8], [5, 9],
+    // Right tongue (short)
+    [4, 9], [4, 10],
+    [5, 10],
+    // Merged body
+    [6, 1], [6, 2], [6, 3], [6, 4], [6, 5], [6, 6], [6, 7], [6, 8], [6, 9], [6, 10], [6, 11],
+    [7, 1], [7, 2], [7, 3], [7, 4], [7, 5], [7, 6], [7, 7], [7, 8], [7, 9], [7, 10], [7, 11],
+    [8, 1], [8, 2], [8, 3], [8, 4], [8, 5], [8, 6], [8, 7], [8, 8], [8, 9], [8, 10], [8, 11],
+    [9, 2], [9, 3], [9, 4], [9, 5], [9, 6], [9, 7], [9, 8], [9, 9], [9, 10],
+    [10, 3], [10, 4], [10, 5], [10, 6], [10, 7], [10, 8], [10, 9],
+    [11, 4], [11, 5], [11, 6], [11, 7], [11, 8],
+    [12, 5], [12, 6], [12, 7],
+    [13, 5], [13, 6], [13, 7],
+  ];
+  outer1.forEach(([r, c]) => { m[`${r},${c}`] = R1; });
+
+  // Orange-red mid
+  const outer2: [number, number][] = [
+    [3, 5], [3, 6],
+    [4, 4], [4, 5], [4, 6], [4, 7], [4, 9],
+    [5, 3], [5, 4], [5, 5], [5, 6], [5, 7], [5, 8], [5, 9],
+    [6, 2], [6, 3], [6, 4], [6, 5], [6, 6], [6, 7], [6, 8], [6, 9], [6, 10],
+    [7, 2], [7, 3], [7, 4], [7, 5], [7, 6], [7, 7], [7, 8], [7, 9], [7, 10],
+    [8, 2], [8, 3], [8, 4], [8, 5], [8, 6], [8, 7], [8, 8], [8, 9], [8, 10],
+    [9, 3], [9, 4], [9, 5], [9, 6], [9, 7], [9, 8], [9, 9],
+    [10, 4], [10, 5], [10, 6], [10, 7], [10, 8],
+    [11, 5], [11, 6], [11, 7],
+    [12, 6],
+  ];
+  outer2.forEach(([r, c]) => { m[`${r},${c}`] = R2; });
+
+  // Orange
+  const mid: [number, number][] = [
+    [4, 5], [4, 6], [4, 7],
+    [5, 4], [5, 5], [5, 6], [5, 7], [5, 8],
+    [6, 3], [6, 4], [6, 5], [6, 6], [6, 7], [6, 8], [6, 9],
+    [7, 3], [7, 4], [7, 5], [7, 6], [7, 7], [7, 8], [7, 9],
+    [8, 3], [8, 4], [8, 5], [8, 6], [8, 7], [8, 8], [8, 9],
+    [9, 4], [9, 5], [9, 6], [9, 7], [9, 8],
+    [10, 5], [10, 6], [10, 7],
+  ];
+  mid.forEach(([r, c]) => { m[`${r},${c}`] = O; });
+
+  // Yellow
+  const inner: [number, number][] = [
+    [5, 5], [5, 6], [5, 7],
+    [6, 4], [6, 5], [6, 6], [6, 7], [6, 8],
+    [7, 4], [7, 5], [7, 6], [7, 7], [7, 8],
+    [8, 4], [8, 5], [8, 6], [8, 7], [8, 8],
+    [9, 5], [9, 6], [9, 7],
+  ];
+  inner.forEach(([r, c]) => { m[`${r},${c}`] = Y; });
+
+  // Light yellow
+  const innerW: [number, number][] = [
+    [6, 5], [6, 6], [6, 7],
+    [7, 5], [7, 6], [7, 7],
+    [8, 5], [8, 6], [8, 7],
+  ];
+  innerW.forEach(([r, c]) => { m[`${r},${c}`] = W; });
+
+  // White core
+  const core: [number, number][] = [
+    [7, 6],
+  ];
+  core.forEach(([r, c]) => { m[`${r},${c}`] = CORE; });
+
+  // Embers
+  [[1, 4], [1, 8], [2, 1], [3, 10], [3, 11], [5, 0], [5, 12], [8, 12], [10, 0], [11, 10], [12, 3], [13, 9]].forEach(([r, c]) => { m[`${r},${c}`] = EMBER; });
+
   return m;
 }
 
@@ -1154,6 +1221,115 @@ function buildKeyPixels(color: string): PixelMap {
   return m;
 }
 
+function buildVampirePixels(): PixelMap {
+  const m: PixelMap = {};
+  const CAPE = "#1a0033";
+  const CAPE2 = "#2d0055";
+  const HAIR = "#111111";
+  const SKIN = "#f0e0d0";
+  const EYE = "#ff0000";
+  const PUPIL = "#ffffff";
+  const COLLAR = "#cc0000";
+  const GOLD = "#ffd700";
+
+  // Cape back — wide spread like a bat
+  [[1, 4], [1, 5], [1, 8], [1, 9]].forEach(([r, c]) => { m[`${r},${c}`] = CAPE; });
+  [[2, 2], [2, 3], [2, 10], [2, 11]].forEach(([r, c]) => { m[`${r},${c}`] = CAPE; });
+  [[3, 1], [3, 2], [3, 11], [3, 12]].forEach(([r, c]) => { m[`${r},${c}`] = CAPE; });
+  [[4, 0], [4, 1], [4, 12], [4, 13]].forEach(([r, c]) => { m[`${r},${c}`] = CAPE; });
+  [[5, 0], [5, 1], [5, 12], [5, 13]].forEach(([r, c]) => { m[`${r},${c}`] = CAPE; });
+  [[6, 0], [6, 1], [6, 12], [6, 13]].forEach(([r, c]) => { m[`${r},${c}`] = CAPE; });
+  [[7, 0], [7, 1], [7, 12], [7, 13]].forEach(([r, c]) => { m[`${r},${c}`] = CAPE; });
+  [[8, 1], [8, 2], [8, 11], [8, 12]].forEach(([r, c]) => { m[`${r},${c}`] = CAPE; });
+  [[9, 2], [9, 3], [9, 10], [9, 11]].forEach(([r, c]) => { m[`${r},${c}`] = CAPE; });
+  [[10, 3], [10, 4], [10, 9], [10, 10]].forEach(([r, c]) => { m[`${r},${c}`] = CAPE; });
+  [[11, 4], [11, 5], [11, 8], [11, 9]].forEach(([r, c]) => { m[`${r},${c}`] = CAPE; });
+  // Cape inner lining
+  [[3, 4], [3, 9], [4, 3], [4, 10], [5, 2], [5, 11], [6, 2], [6, 11],
+   [7, 2], [7, 11], [8, 3], [8, 10], [9, 4], [9, 9], [10, 5], [10, 8]].forEach(([r, c]) => { m[`${r},${c}`] = CAPE2; });
+
+  // Hair (widow's peak)
+  [[3, 5], [3, 6], [3, 7], [3, 8]].forEach(([r, c]) => { m[`${r},${c}`] = HAIR; });
+  [[4, 4], [4, 5], [4, 7], [4, 8]].forEach(([r, c]) => { m[`${r},${c}`] = HAIR; });
+
+  // Face
+  [[4, 6]].forEach(([r, c]) => { m[`${r},${c}`] = SKIN; });
+  [[5, 5], [5, 6], [5, 7]].forEach(([r, c]) => { m[`${r},${c}`] = SKIN; });
+  [[6, 4], [6, 5], [6, 6], [6, 7], [6, 8]].forEach(([r, c]) => { m[`${r},${c}`] = SKIN; });
+  [[7, 4], [7, 5], [7, 6], [7, 7], [7, 8]].forEach(([r, c]) => { m[`${r},${c}`] = SKIN; });
+  [[8, 4], [8, 5], [8, 6], [8, 7], [8, 8]].forEach(([r, c]) => { m[`${r},${c}`] = SKIN; });
+
+  // Red eyes
+  [[5, 4], [5, 5], [5, 7], [5, 8]].forEach(([r, c]) => { m[`${r},${c}`] = EYE; });
+  [[6, 4], [6, 5], [6, 7], [6, 8]].forEach(([r, c]) => { m[`${r},${c}`] = EYE; });
+
+  // White pupils (small dots within eyes)
+  [[5, 4], [5, 7]].forEach(([r, c]) => { m[`${r},${c}`] = PUPIL; });
+
+  // Collar (high collar like Dracula)
+  [[9, 4], [9, 5], [9, 7], [9, 8]].forEach(([r, c]) => { m[`${r},${c}`] = COLLAR; });
+  // Collar clasp
+  [[9, 6]].forEach(([r, c]) => { m[`${r},${c}`] = GOLD; });
+  // Collar bottom
+  [[10, 5], [10, 6], [10, 7]].forEach(([r, c]) => { m[`${r},${c}`] = COLLAR; });
+
+  return m;
+}
+
+function buildExplosionPixels(color: string): PixelMap {
+  const m: PixelMap = {};
+  const CORE = "#ffffff";
+  const YELLOW = "#ffd700";
+  const ORANGE = "#ff8c00";
+  const RED = "#ff4500";
+  const DEBRIS = "#ff2200";
+
+  // White hot core
+  [[7, 7]].forEach(([r, c]) => { m[`${r},${c}`] = CORE; });
+
+  // Yellow inner ring
+  [[6, 6], [6, 7], [6, 8], [7, 6], [7, 8], [8, 6], [8, 7], [8, 8]].forEach(([r, c]) => { m[`${r},${c}`] = YELLOW; });
+
+  // Orange medium ring
+  [
+    [5, 5], [5, 6], [5, 7], [5, 8], [5, 9],
+    [6, 5], [6, 9],
+    [7, 5], [7, 9],
+    [8, 5], [8, 9],
+    [9, 5], [9, 6], [9, 7], [9, 8], [9, 9],
+  ].forEach(([r, c]) => { m[`${r},${c}`] = ORANGE; });
+
+  // Red outer body
+  [
+    [4, 4], [4, 5], [4, 6], [4, 7], [4, 8], [4, 9], [4, 10],
+    [5, 4], [5, 10],
+    [6, 4], [6, 10],
+    [7, 4], [7, 10],
+    [8, 4], [8, 10],
+    [9, 4], [9, 10],
+    [10, 4], [10, 5], [10, 6], [10, 7], [10, 8], [10, 9], [10, 10],
+  ].forEach(([r, c]) => { m[`${r},${c}`] = RED; });
+
+  // Spikes (irregular lengths)
+  [
+    [3, 7], [2, 7], [1, 7],
+    [11, 7], [12, 7], [13, 7],
+    [7, 3], [7, 2], [7, 1],
+    [7, 11], [7, 12], [7, 13],
+    [3, 3], [2, 2],
+    [3, 11], [2, 12],
+    [11, 3], [12, 2],
+    [11, 11], [12, 12],
+    [5, 3], [5, 11],
+    [9, 3], [9, 11],
+  ].forEach(([r, c]) => { m[`${r},${c}`] = RED; });
+
+  // Debris particles
+  [[0, 3], [0, 7], [0, 11], [1, 1], [1, 13], [3, 1], [3, 13], [7, 0], [7, 13], [11, 1], [11, 13], [13, 3], [13, 11]].forEach(([r, c]) => { m[`${r},${c}`] = DEBRIS; });
+
+  return m;
+}
+
 function buildUfoPixels(color: string): PixelMap {
   const m: PixelMap = {};
   // Dome
@@ -1231,6 +1407,35 @@ function buildGhostLoaderPixels(): PixelMap {
 // Per-cell flicker assignments — only presets with explicit flicker patterns need entries
 // Key: cell coords "r,c" → "0" (flicker0: on→off) or "1" (flicker1: off→on)
 export const PRESET_FLICKER: Record<string, Record<string, "0" | "1">> = {
+  explosion: {
+    "0,3": "0", "0,7": "1", "0,11": "0",
+    "1,1": "1", "1,7": "0", "1,13": "1",
+    "2,2": "0", "2,12": "1",
+    "3,1": "0", "3,3": "1", "3,11": "0", "3,13": "1",
+    "7,0": "1", "7,1": "0", "7,3": "1",
+    "7,11": "0", "7,12": "1", "7,13": "0",
+    "11,1": "1", "11,3": "0", "11,11": "1", "11,13": "0",
+    "12,2": "1", "12,12": "0",
+    "13,3": "1", "13,7": "0", "13,11": "1",
+  },
+  flame: {
+    "2,5": "0",
+    "2,6": "1",
+    "4,3": "0",
+    "4,10": "1",
+    "5,2": "1",
+    "5,9": "0",
+    "6,11": "0",
+    "7,1": "1",
+    "8,11": "1",
+    "9,2": "0",
+    "9,10": "1",
+    "10,3": "0",
+    "11,4": "1",
+    "11,8": "0",
+    "13,5": "1",
+    "13,7": "0",
+  },
   ghost_loader: {
     // Row 12 — an4, an7, an10, an13, an16
     "12,2": "1",
@@ -1277,6 +1482,17 @@ export const PRESET_FLICKER: Record<string, Record<string, "0" | "1">> = {
     "13,12": "1",
     // an14(13,10) — no entry → transparent
   },
+  vampire: {
+    // Cape inner lining flickers like fluttering fabric
+    "3,4": "0", "3,9": "1",
+    "4,3": "0", "4,10": "1",
+    "5,2": "1", "5,11": "0",
+    "6,2": "0", "6,11": "1",
+    "7,2": "1", "7,11": "0",
+    "8,3": "0", "8,10": "1",
+    "9,4": "1", "9,9": "0",
+    "10,5": "0", "10,8": "1",
+  },
 };
 
 // Per-cell pupil positions — defines which cells get the eye movement animation
@@ -1288,6 +1504,9 @@ export const PRESET_PUPILS: Record<string, Record<string, true>> = {
   ghost_mouth: {
     "5,3": true, "5,4": true, "6,3": true, "6,4": true,
     "5,9": true, "5,10": true, "6,9": true, "6,10": true,
+  },
+  vampire: {
+    "5,4": true, "5,7": true,
   },
 };
 
@@ -1316,7 +1535,9 @@ export const PIXEL_PRESETS: Record<string, PixelMap> = {
   house: buildHousePixels("#ef9f27"),
   key: buildKeyPixels("#ef9f27"),
   ufo: buildUfoPixels("#1d9e75"),
+  explosion: buildExplosionPixels("#ff4500"),
   ghost_loader: buildGhostLoaderPixels(),
+  vampire: buildVampirePixels(),
 };
 
 export const ANIMATION_PRESETS: AnimPreset[] = [
