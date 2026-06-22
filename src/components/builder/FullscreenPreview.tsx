@@ -10,6 +10,7 @@ export function FullscreenPreview() {
   const animParams = useBuilderStore((s) => s.animParams);
   const layers = useBuilderStore((s) => s.layers);
   const flickerCells = useBuilderStore((s) => s.flickerCells);
+  const pupilCells = useBuilderStore((s) => s.pupilCells);
   const previewDarkBg = useBuilderStore((s) => s.previewDarkBg);
   const togglePreviewBg = useBuilderStore((s) => s.togglePreviewBg);
   const toggleFullscreen = useBuilderStore((s) => s.toggleFullscreen);
@@ -126,7 +127,7 @@ export function FullscreenPreview() {
                 const flickAnim = layers.flicker && (flickerType || isAutoFlicker)
                   ? `anim-flicker${flickerType || ((r + c) % 2 === 0 ? "0" : "1")} ${dur} infinite ${tim}`
                   : undefined;
-                const isPupil = layers.eyes && (color === "#1a4fa8" || color === "#0000ff");
+                const isPupil = layers.eyes && pupilCells[key];
                 const eyeAnim = isPupil ? `anim-eyes ${dur} infinite ${tim}` : undefined;
                 return (
                   <div

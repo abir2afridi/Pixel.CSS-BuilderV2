@@ -7,7 +7,7 @@ import type {
   AnimParams,
   LayerState,
 } from "@/lib/types";
-import { ANIMATION_PRESETS, PIXEL_PRESETS, PRESET_FLICKER } from "@/lib/presets";
+import { ANIMATION_PRESETS, PIXEL_PRESETS, PRESET_FLICKER, PRESET_PUPILS } from "@/lib/presets";
 import { floodFill } from "@/lib/pixelUtils";
 
 interface BuilderActions {
@@ -47,6 +47,7 @@ export const useBuilderStore = create<BuilderState & BuilderActions>((set, get) 
   gridSize: 14,
   pixels: {},
   flickerCells: {},
+  pupilCells: {},
   tool: "draw",
   drawColor: "#e24b4a",
   flickerColor: "#e24b4a",
@@ -110,7 +111,7 @@ export const useBuilderStore = create<BuilderState & BuilderActions>((set, get) 
   clearPixels: () => {
     const { pixels, history } = get();
     const newHistory = [...history, { ...pixels }].slice(-MAX_HISTORY);
-    set({ pixels: {}, flickerCells: {}, history: newHistory, future: [] });
+    set({ pixels: {}, flickerCells: {}, pupilCells: {}, history: newHistory, future: [] });
   },
 
   loadPreset: (name) => {
@@ -120,6 +121,7 @@ export const useBuilderStore = create<BuilderState & BuilderActions>((set, get) 
       set({
         pixels: { ...PIXEL_PRESETS[name] },
         flickerCells: PRESET_FLICKER[name] ? { ...PRESET_FLICKER[name] } : {},
+        pupilCells: PRESET_PUPILS[name] ? { ...PRESET_PUPILS[name] } : {},
         history: newHistory,
         future: [],
       });
