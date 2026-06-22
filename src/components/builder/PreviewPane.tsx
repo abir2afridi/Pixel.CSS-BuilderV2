@@ -11,6 +11,7 @@ export function PreviewPane() {
   const activePreset = useBuilderStore((s) => s.activePreset);
   const animParams = useBuilderStore((s) => s.animParams);
   const layers = useBuilderStore((s) => s.layers);
+  const flickerCells = useBuilderStore((s) => s.flickerCells);
   const previewDarkBg = useBuilderStore((s) => s.previewDarkBg);
   const togglePreviewBg = useBuilderStore((s) => s.togglePreviewBg);
   const toggleFullscreen = useBuilderStore((s) => s.toggleFullscreen);
@@ -169,12 +170,13 @@ export function PreviewPane() {
                 const key = `${r},${c}`;
                 const color = pixels[key];
                 if (!color) return <div key={key} style={{ width: cell, height: cell }} />;
-                const isBottom = bottomKeys.has(key);
-                const flickAnim =
-                  isBottom && layers.flicker
-                    ? `${(r + c) % 2 === 0 ? "anim-flicker0" : "anim-flicker1"} ${dur} infinite ${tim}`
-                    : undefined;
-                const isPupil = layers.eyes && color === "#1a4fa8";
+                const flickerType = flickerCells[key];
+                const hasCustomFlicker = Object.keys(flickerCells).length > 0;
+                const isAutoFlicker = !hasCustomFlicker && bottomKeys.has(key);
+                const flickAnim = layers.flicker && (flickerType || isAutoFlicker)
+                  ? `anim-flicker${flickerType || ((r + c) % 2 === 0 ? "0" : "1")} ${dur} infinite ${tim}`
+                  : undefined;
+                const isPupil = layers.eyes && (color === "#1a4fa8" || color === "#0000ff");
                 const eyeAnim = isPupil ? `anim-eyes ${dur} infinite ${tim}` : undefined;
                 return (
                   <div

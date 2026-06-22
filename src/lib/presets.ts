@@ -1328,9 +1328,13 @@ function buildUfoPixels(color: string): PixelMap {
   return m;
 }
 
-function buildGhostLoaderPixels(color: string): PixelMap {
+function buildGhostLoaderPixels(): PixelMap {
   const m: PixelMap = {};
-  // Body crown (top0-4) — same shape as ghost_red
+  // Body crown (top0-4) — exact grid-template-areas from reference
+  const BODY = "#ff0000";
+  const WHITE = "#ffffff";
+  const PUPIL = "#0000ff";
+
   const body: [number, number][] = [
     [0, 5], [0, 6], [0, 7], [0, 8],
     [1, 3], [1, 4], [1, 5], [1, 6], [1, 7], [1, 8], [1, 9], [1, 10],
@@ -1344,37 +1348,63 @@ function buildGhostLoaderPixels(color: string): PixelMap {
     [9, 0], [9, 1], [9, 2], [9, 3], [9, 4], [9, 5], [9, 6], [9, 7], [9, 8], [9, 9], [9, 10], [9, 11], [9, 12], [9, 13],
     [10, 0], [10, 1], [10, 2], [10, 3], [10, 4], [10, 5], [10, 6], [10, 7], [10, 8], [10, 9], [10, 10], [10, 11], [10, 12], [10, 13],
     [11, 0], [11, 1], [11, 2], [11, 3], [11, 4], [11, 5], [11, 6], [11, 7], [11, 8], [11, 9], [11, 10], [11, 11], [11, 12], [11, 13],
-    // Tentacle base (st0-st5)
     [12, 0], [12, 1], [12, 3], [12, 5], [12, 8], [12, 10], [12, 12], [12, 13],
   ];
-  body.forEach(([r, c]) => { m[`${r},${c}`] = color; });
-  // ALL an cells get body color — flicker animation toggles their opacity
+  body.forEach(([r, c]) => { m[`${r},${c}`] = BODY; });
+
+  // Flicker cells (an1-an18) — exact reference: an5(13,3) & an14(13,10) have NO background
   [
     [12, 2], [12, 4], [12, 6], [12, 7], [12, 9], [12, 11],
-    [13, 0], [13, 1], [13, 2], [13, 3], [13, 4], [13, 5],
-    [13, 6], [13, 7], [13, 8], [13, 9], [13, 10], [13, 11], [13, 12], [13, 13],
-  ].forEach(([r, c]) => { m[`${r},${c}`] = color; });
-  // === EYES ===
-  // Left eye L-shape (white ::before + ::after from reference)
-  // Vertical bar: cols 2-3, rows 3-7
-  // Horizontal bar: cols 1-4, rows 4-6
+    [13, 0], [13, 1], [13, 2], [13, 4], [13, 5],
+    [13, 6], [13, 7], [13, 8], [13, 9], [13, 11], [13, 12], [13, 13],
+  ].forEach(([r, c]) => { m[`${r},${c}`] = BODY; });
+
+  // White eye L-shapes (left eye ::before + ::after)
   [[3, 2], [3, 3], [4, 1], [4, 2], [4, 3], [4, 4],
    [5, 1], [5, 2], [5, 3], [5, 4],
    [6, 1], [6, 2], [6, 3], [6, 4],
    [7, 2], [7, 3],
-  ].forEach(([r, c]) => { m[`${r},${c}`] = "#ffffff"; });
-  // Right eye L-shape (mirror)
-  [[3, 8], [3, 9], [4, 7], [4, 8], [4, 9], [4, 10],
+   // Right eye (mirror)
+   [3, 8], [3, 9], [4, 7], [4, 8], [4, 9], [4, 10],
    [5, 7], [5, 8], [5, 9], [5, 10],
    [6, 7], [6, 8], [6, 9], [6, 10],
    [7, 8], [7, 9],
-  ].forEach(([r, c]) => { m[`${r},${c}`] = "#ffffff"; });
-  // Left pupil (2×2 blue)
-  [[5, 1], [5, 2], [6, 1], [6, 2]].forEach(([r, c]) => { m[`${r},${c}`] = "#1a4fa8"; });
-  // Right pupil (2×2 blue)
-  [[5, 7], [5, 8], [6, 7], [6, 8]].forEach(([r, c]) => { m[`${r},${c}`] = "#1a4fa8"; });
+  ].forEach(([r, c]) => { m[`${r},${c}`] = WHITE; });
+
+  // Blue pupils (on top of white eyes, z-index: 1)
+  [[5, 1], [5, 2], [6, 1], [6, 2],
+   [5, 7], [5, 8], [6, 7], [6, 8],
+  ].forEach(([r, c]) => { m[`${r},${c}`] = PUPIL; });
+
   return m;
 }
+
+// Per-cell flicker assignments — only presets with explicit flicker patterns need entries
+// Key: cell coords "r,c" → "0" (flicker0: on→off) or "1" (flicker1: off→on)
+export const PRESET_FLICKER: Record<string, Record<string, "0" | "1">> = {
+  ghost_loader: {
+    // Row 12 — an4, an7, an10, an13, an16
+    "12,2": "1",
+    "12,4": "0",
+    "12,6": "1",
+    "12,7": "1",
+    "12,9": "0",
+    "12,11": "1",
+    // Row 13 — all except an5(13,3) and an14(13,10)
+    "13,0": "0",
+    "13,1": "1",
+    "13,2": "1",
+    "13,4": "0",
+    "13,5": "0",
+    "13,6": "1",
+    "13,7": "1",
+    "13,8": "0",
+    "13,9": "0",
+    "13,11": "1",
+    "13,12": "1",
+    "13,13": "0",
+  },
+};
 
 export const PIXEL_PRESETS: Record<string, PixelMap> = {
   ghost_red: buildGhostPixels("#e24b4a"),
@@ -1401,7 +1431,7 @@ export const PIXEL_PRESETS: Record<string, PixelMap> = {
   house: buildHousePixels("#ef9f27"),
   key: buildKeyPixels("#ef9f27"),
   ufo: buildUfoPixels("#1d9e75"),
-  ghost_loader: buildGhostLoaderPixels("#e24b4a"),
+  ghost_loader: buildGhostLoaderPixels(),
 };
 
 export const ANIMATION_PRESETS: AnimPreset[] = [

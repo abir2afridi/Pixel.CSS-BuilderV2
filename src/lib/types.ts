@@ -48,9 +48,13 @@ export interface PixelMap {
   [key: string]: string;
 }
 
+export type FlickerType = "0" | "1";
+export type FlickerMap = Record<string, FlickerType>;
+
 export interface BuilderState {
   gridSize: GridSize;
   pixels: PixelMap;
+  flickerCells: FlickerMap;
   tool: Tool;
   drawColor: string;
   flickerColor: string;
