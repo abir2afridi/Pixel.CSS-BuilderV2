@@ -82,7 +82,7 @@ export function generateKeyframes(preset: AnimPresetName, params: AnimParams): s
 }
 @keyframes anim-eyes {
   0%, 49% { transform: translateX(0); }
-  50%, 99% { transform: translateX(3px); }
+  50%, 99% { transform: translateX(10px); }
   100% { transform: translateX(0); }
 }`
   );

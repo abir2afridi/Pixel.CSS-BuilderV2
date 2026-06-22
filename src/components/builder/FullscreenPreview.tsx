@@ -90,7 +90,7 @@ export function FullscreenPreview() {
           style={{
             background: previewDarkBg
               ? "radial-gradient(circle at 50% 40%, #1a0a0a 0%, #000 70%)"
-              : "radial-gradient(circle at 50% 40%, #222 0%, #111 70%)",
+              : "radial-gradient(circle at 50% 40%, var(--builder-surface-raised) 0%, var(--builder-bg) 70%)",
           }}
         >
           {/* dot grid overlay */}

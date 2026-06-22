@@ -1,7 +1,9 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useCallback } from "react";
 import { useBuilderStore } from "@/store/useBuilderStore";
 import { generateKeyframes, getAnimationName } from "@/lib/animationEngine";
 import { getBottomRows } from "@/lib/pixelUtils";
+
+const ZOOM_STEPS = [0.5, 0.75, 1, 1.25, 1.5, 2];
 
 export function PreviewPane() {
   const pixels = useBuilderStore((s) => s.pixels);
@@ -15,6 +17,7 @@ export function PreviewPane() {
 
   const containerRef = useRef<HTMLDivElement>(null);
   const [autoScale, setAutoScale] = useState(3);
+  const [previewZoom, setPreviewZoom] = useState(0.5);
 
   useEffect(() => {
     const el = containerRef.current;
@@ -43,6 +46,28 @@ export function PreviewPane() {
     ? { animation: `${animName} ${dur} infinite ${tim}` }
     : {};
 
+  const zoomIn = useCallback(() => {
+    const idx = ZOOM_STEPS.findIndex((z) => z >= previewZoom);
+    const next = Math.min(ZOOM_STEPS.length - 1, (idx === -1 ? ZOOM_STEPS.length - 1 : idx) + 1);
+    setPreviewZoom(ZOOM_STEPS[next]);
+  }, [previewZoom]);
+
+  const zoomOut = useCallback(() => {
+    const idx = ZOOM_STEPS.findIndex((z) => z >= previewZoom);
+    const next = Math.max(0, (idx === -1 ? ZOOM_STEPS.length - 1 : idx) - 1);
+    setPreviewZoom(ZOOM_STEPS[next]);
+  }, [previewZoom]);
+
+  const handleWheel = useCallback(
+    (e: React.WheelEvent) => {
+      if (!e.ctrlKey && !e.metaKey) return;
+      e.preventDefault();
+      if (e.deltaY < 0) zoomIn();
+      else zoomOut();
+    },
+    [zoomIn, zoomOut],
+  );
+
   return (
     <div ref={containerRef}>
       <style>{keyframes}</style>
@@ -57,11 +82,33 @@ export function PreviewPane() {
           Live Preview
         </span>
         <div className="flex items-center gap-1.5">
-          <span
-            className="text-[10px] text-builder-text-muted"
+          <button
+            onClick={zoomOut}
+            disabled={previewZoom <= ZOOM_STEPS[0]}
+            className="size-5 flex items-center justify-center text-[10px] rounded text-builder-text-muted border border-builder-border bg-builder-surface-inset hover:border-builder-border-strong hover:text-builder-text transition-all disabled:opacity-30 disabled:pointer-events-none"
             style={{ fontFamily: "JetBrains Mono, monospace" }}
           >
-            {scale}×
+            −
+          </button>
+          <span
+            className="text-[10px] text-builder-text-muted min-w-[28px] text-center"
+            style={{ fontFamily: "JetBrains Mono, monospace" }}
+          >
+            {Math.round(previewZoom * 100)}%
+          </span>
+          <button
+            onClick={zoomIn}
+            disabled={previewZoom >= ZOOM_STEPS[ZOOM_STEPS.length - 1]}
+            className="size-5 flex items-center justify-center text-[10px] rounded text-builder-text-muted border border-builder-border bg-builder-surface-inset hover:border-builder-border-strong hover:text-builder-text transition-all disabled:opacity-30 disabled:pointer-events-none"
+            style={{ fontFamily: "JetBrains Mono, monospace" }}
+          >
+            +
+          </button>
+          <span
+            className="text-[10px] text-builder-text-muted ml-1"
+            style={{ fontFamily: "JetBrains Mono, monospace" }}
+          >
+            {autoScale}×
           </span>
           <button
             onClick={togglePreviewBg}
@@ -85,10 +132,11 @@ export function PreviewPane() {
         {/* Preview viewport */}
         <div
           className="relative flex items-center justify-center mx-4 mt-4 rounded-xl overflow-hidden ring-1 ring-inset ring-builder-border/50"
+          onWheel={handleWheel}
           style={{
             background: previewDarkBg
               ? "radial-gradient(circle at 50% 40%, #1a0a0a 0%, #000 70%)"
-              : "radial-gradient(circle at 50% 40%, #f0f0f3 0%, #dcdce0 70%)",
+              : "radial-gradient(circle at 50% 40%, var(--builder-surface-raised) 0%, var(--builder-bg) 70%)",
             minHeight: "180px",
           }}
         >
@@ -100,7 +148,10 @@ export function PreviewPane() {
               backgroundSize: "16px 16px",
             }}
           />
-          <div className="relative inline-block py-6">
+          <div
+            className="relative inline-block py-6"
+            style={{ transform: `scale(${previewZoom})`, transformOrigin: "center center" }}
+          >
             <div
               style={{
                 display: "grid",

@@ -31,7 +31,7 @@ export function floodFill(
 
 export function getBottomRows(pixels: PixelMap, gridSize: GridSize): Set<string> {
   const bottomSet = new Set<string>();
-  for (let r = gridSize - 3; r < gridSize; r++) {
+  for (let r = gridSize - 2; r < gridSize; r++) {
     for (let c = 0; c < gridSize; c++) {
       const k = `${r},${c}`;
       if (pixels[k]) bottomSet.add(k);
