@@ -1,6 +1,5 @@
 import { useBuilderStore } from "@/store/useBuilderStore";
 import type { Tool, GridSize } from "@/lib/types";
-import { PIXEL_PRESETS } from "@/lib/presets";
 
 const GRID_SIZES: GridSize[] = [8, 10, 12, 14, 16, 20, 24, 32];
 
@@ -19,7 +18,10 @@ export function Toolbar() {
   const gridSize = useBuilderStore((s) => s.gridSize);
   const setGridSize = useBuilderStore((s) => s.setGridSize);
   const clearPixels = useBuilderStore((s) => s.clearPixels);
-  const loadPreset = useBuilderStore((s) => s.loadPreset);
+  const undo = useBuilderStore((s) => s.undo);
+  const redo = useBuilderStore((s) => s.redo);
+  const historyLen = useBuilderStore((s) => s.history.length);
+  const futureLen = useBuilderStore((s) => s.future.length);
 
   const tools: { id: Tool; label: string }[] = [
     { id: "draw", label: "Draw" },
@@ -92,26 +94,31 @@ export function Toolbar() {
         </select>
       </div>
 
-      <div className="h-6 w-px bg-builder-border" />
+      <div className="ml-auto" />
 
-      {/* Presets */}
-      <div className="flex items-center gap-1 flex-wrap">
-        <span className="text-[10px] uppercase tracking-[0.15em] text-builder-text-muted mr-1">
-          load
-        </span>
-        {Object.keys(PIXEL_PRESETS).map((name) => (
-          <button
-            key={name}
-            onClick={() => loadPreset(name)}
-            className="px-2 py-1 text-[10px] text-builder-text-muted rounded-md border border-builder-border bg-builder-surface-inset hover:border-builder-border-strong hover:text-builder-text hover:bg-builder-surface/60 transition-all"
-            style={{ fontFamily: "JetBrains Mono, monospace" }}
-          >
-            {name.replace("_", " ")}
-          </button>
-        ))}
+      {/* Undo / Redo */}
+      <div className="flex items-center gap-1 p-1 rounded-lg bg-builder-surface-inset border border-builder-border transition-colors">
+        <button
+          onClick={undo}
+          disabled={historyLen === 0}
+          title="Undo (Ctrl+Z)"
+          className="flex items-center gap-1 px-2 py-1 text-[11px] font-medium rounded-md text-builder-text-muted hover:text-builder-text hover:bg-builder-surface disabled:opacity-30 disabled:cursor-not-allowed transition-all"
+          style={{ fontFamily: "JetBrains Mono, monospace" }}
+        >
+          ↶ Undo
+        </button>
+        <button
+          onClick={redo}
+          disabled={futureLen === 0}
+          title="Redo (Ctrl+Shift+Z)"
+          className="flex items-center gap-1 px-2 py-1 text-[11px] font-medium rounded-md text-builder-text-muted hover:text-builder-text hover:bg-builder-surface disabled:opacity-30 disabled:cursor-not-allowed transition-all"
+          style={{ fontFamily: "JetBrains Mono, monospace" }}
+        >
+          ↷ Redo
+        </button>
       </div>
 
-      <div className="ml-auto" />
+      <div className="h-6 w-px bg-builder-border" />
 
       <button
         onClick={clearPixels}

@@ -947,11 +947,201 @@ function buildGhostMouthPixels(color: string): PixelMap {
   return m;
 }
 
+function buildPotionPixels(color: string): PixelMap {
+  const m: PixelMap = {};
+  // Cork
+  [[0, 6], [0, 7]].forEach(([r, c]) => { m[`${r},${c}`] = "#ba7517"; });
+  // Neck
+  [[1, 6], [1, 7], [2, 6], [2, 7]].forEach(([r, c]) => { m[`${r},${c}`] = color; });
+  // Shoulder widen
+  [[3, 5], [3, 6], [3, 7], [3, 8]].forEach(([r, c]) => { m[`${r},${c}`] = color; });
+  // Body
+  const body: [number, number][] = [
+    [4, 4], [4, 5], [4, 6], [4, 7], [4, 8], [4, 9],
+    [5, 3], [5, 4], [5, 5], [5, 6], [5, 7], [5, 8], [5, 9], [5, 10],
+    [6, 3], [6, 4], [6, 5], [6, 6], [6, 7], [6, 8], [6, 9], [6, 10],
+    [7, 3], [7, 4], [7, 5], [7, 6], [7, 7], [7, 8], [7, 9], [7, 10],
+    [8, 3], [8, 4], [8, 5], [8, 6], [8, 7], [8, 8], [8, 9], [8, 10],
+    [9, 4], [9, 5], [9, 6], [9, 7], [9, 8], [9, 9],
+    [10, 5], [10, 6], [10, 7], [10, 8],
+    [11, 6], [11, 7],
+  ];
+  body.forEach(([r, c]) => { m[`${r},${c}`] = color; });
+  // Bubbles
+  [[7, 5], [8, 8], [6, 9]].forEach(([r, c]) => { m[`${r},${c}`] = "#ffffff"; });
+  // Highlight
+  [[5, 4], [6, 4]].forEach(([r, c]) => { m[`${r},${c}`] = "#ffffff"; });
+  return m;
+}
+
+function buildMushroomPixels(color: string): PixelMap {
+  const m: PixelMap = {};
+  // Cap top
+  [[1, 5], [1, 6], [1, 7], [1, 8]].forEach(([r, c]) => { m[`${r},${c}`] = color; });
+  [[2, 4], [2, 5], [2, 6], [2, 7], [2, 8], [2, 9]].forEach(([r, c]) => { m[`${r},${c}`] = color; });
+  [[3, 3], [3, 4], [3, 5], [3, 6], [3, 7], [3, 8], [3, 9], [3, 10]].forEach(([r, c]) => { m[`${r},${c}`] = color; });
+  [[4, 2], [4, 3], [4, 4], [4, 5], [4, 6], [4, 7], [4, 8], [4, 9], [4, 10], [4, 11]].forEach(([r, c]) => { m[`${r},${c}`] = color; });
+  [[5, 2], [5, 3], [5, 4], [5, 5], [5, 6], [5, 7], [5, 8], [5, 9], [5, 10], [5, 11]].forEach(([r, c]) => { m[`${r},${c}`] = color; });
+  // Cap underside
+  [[6, 1], [6, 2], [6, 3], [6, 4], [6, 5], [6, 6], [6, 7], [6, 8], [6, 9], [6, 10], [6, 11], [6, 12]].forEach(([r, c]) => { m[`${r},${c}`] = color; });
+  // White spots on cap
+  [[2, 5], [2, 8], [4, 4], [4, 9], [3, 7]].forEach(([r, c]) => { m[`${r},${c}`] = "#ffffff"; });
+  // Stem
+  [[7, 5], [7, 6], [7, 7], [7, 8]].forEach(([r, c]) => { m[`${r},${c}`] = "#fcc78b"; });
+  [[8, 5], [8, 6], [8, 7], [8, 8]].forEach(([r, c]) => { m[`${r},${c}`] = "#fcc78b"; });
+  [[9, 5], [9, 6], [9, 7], [9, 8]].forEach(([r, c]) => { m[`${r},${c}`] = "#fcc78b"; });
+  [[10, 5], [10, 6], [10, 7], [10, 8]].forEach(([r, c]) => { m[`${r},${c}`] = "#fcc78b"; });
+  [[11, 6], [11, 7]].forEach(([r, c]) => { m[`${r},${c}`] = "#fcc78b"; });
+  return m;
+}
+
+function buildCrownPixels(color: string): PixelMap {
+  const m: PixelMap = {};
+  // Peaks
+  [[1, 2], [1, 6], [1, 7], [1, 11]].forEach(([r, c]) => { m[`${r},${c}`] = color; });
+  [[2, 1], [2, 2], [2, 3], [2, 5], [2, 6], [2, 7], [2, 8], [2, 10], [2, 11], [2, 12]].forEach(([r, c]) => { m[`${r},${c}`] = color; });
+  [[3, 0], [3, 1], [3, 2], [3, 3], [3, 4], [3, 5], [3, 6], [3, 7], [3, 8], [3, 9], [3, 10], [3, 11], [3, 12], [3, 13]].forEach(([r, c]) => { m[`${r},${c}`] = color; });
+  // Band
+  [[4, 0], [4, 1], [4, 2], [4, 3], [4, 4], [4, 5], [4, 6], [4, 7], [4, 8], [4, 9], [4, 10], [4, 11], [4, 12], [4, 13]].forEach(([r, c]) => { m[`${r},${c}`] = color; });
+  [[5, 0], [5, 1], [5, 2], [5, 3], [5, 4], [5, 5], [5, 6], [5, 7], [5, 8], [5, 9], [5, 10], [5, 11], [5, 12], [5, 13]].forEach(([r, c]) => { m[`${r},${c}`] = color; });
+  // Gems on band
+  [[4, 3], [5, 3]].forEach(([r, c]) => { m[`${r},${c}`] = "#e24b4a"; });
+  [[4, 6], [4, 7], [5, 6], [5, 7]].forEach(([r, c]) => { m[`${r},${c}`] = "#378add"; });
+  [[4, 10], [5, 10]].forEach(([r, c]) => { m[`${r},${c}`] = "#1d9e75"; });
+  // Peak tips gold
+  [[1, 2], [1, 11]].forEach(([r, c]) => { m[`${r},${c}`] = "#ef9f27"; });
+  return m;
+}
+
+function buildLightningPixels(color: string): PixelMap {
+  const m: PixelMap = {};
+  const bolt: [number, number][] = [
+    [0, 7], [0, 8],
+    [1, 6], [1, 7],
+    [2, 5], [2, 6],
+    [3, 4], [3, 5], [3, 6], [3, 7], [3, 8], [3, 9],
+    [4, 5], [4, 6], [4, 7],
+    [5, 6], [5, 7],
+    [6, 7], [6, 8],
+    [7, 8], [7, 9],
+    [8, 7], [8, 8], [8, 9], [8, 10], [8, 11], [8, 12],
+    [9, 8], [9, 9], [9, 10],
+    [10, 9], [10, 10],
+    [11, 10], [11, 11],
+  ];
+  bolt.forEach(([r, c]) => { m[`${r},${c}`] = color; });
+  // Bright center highlight
+  [[3, 6], [3, 7], [8, 9], [8, 10]].forEach(([r, c]) => { m[`${r},${c}`] = "#ffffff"; });
+  return m;
+}
+
+function buildFlamePixels(color: string): PixelMap {
+  const m: PixelMap = {};
+  // Tip
+  [[1, 6], [1, 7]].forEach(([r, c]) => { m[`${r},${c}`] = color; });
+  [[2, 5], [2, 6], [2, 7], [2, 8]].forEach(([r, c]) => { m[`${r},${c}`] = color; });
+  [[3, 4], [3, 5], [3, 6], [3, 7], [3, 8], [3, 9]].forEach(([r, c]) => { m[`${r},${c}`] = color; });
+  [[4, 3], [4, 4], [4, 5], [4, 6], [4, 7], [4, 8], [4, 9], [4, 10]].forEach(([r, c]) => { m[`${r},${c}`] = color; });
+  [[5, 3], [5, 4], [5, 5], [5, 6], [5, 7], [5, 8], [5, 9], [5, 10]].forEach(([r, c]) => { m[`${r},${c}`] = color; });
+  [[6, 3], [6, 4], [6, 5], [6, 6], [6, 7], [6, 8], [6, 9], [6, 10]].forEach(([r, c]) => { m[`${r},${c}`] = color; });
+  [[7, 2], [7, 3], [7, 4], [7, 5], [7, 6], [7, 7], [7, 8], [7, 9], [7, 10], [7, 11]].forEach(([r, c]) => { m[`${r},${c}`] = color; });
+  [[8, 2], [8, 3], [8, 4], [8, 5], [8, 6], [8, 7], [8, 8], [8, 9], [8, 10], [8, 11]].forEach(([r, c]) => { m[`${r},${c}`] = color; });
+  [[9, 3], [9, 4], [9, 5], [9, 6], [9, 7], [9, 8], [9, 9], [9, 10]].forEach(([r, c]) => { m[`${r},${c}`] = color; });
+  [[10, 4], [10, 5], [10, 6], [10, 7], [10, 8], [10, 9]].forEach(([r, c]) => { m[`${r},${c}`] = color; });
+  [[11, 5], [11, 6], [11, 7], [11, 8]].forEach(([r, c]) => { m[`${r},${c}`] = color; });
+  [[12, 6], [12, 7]].forEach(([r, c]) => { m[`${r},${c}`] = color; });
+  // Inner bright core
+  [[5, 6], [5, 7], [6, 6], [6, 7], [7, 5], [7, 6], [7, 7], [7, 8], [8, 5], [8, 6], [8, 7], [8, 8]].forEach(([r, c]) => { m[`${r},${c}`] = "#ef9f27"; });
+  // White hot center
+  [[6, 6], [6, 7], [7, 6], [7, 7]].forEach(([r, c]) => { m[`${r},${c}`] = "#ffffff"; });
+  return m;
+}
+
+function buildSwordPixels(color: string): PixelMap {
+  const m: PixelMap = {};
+  // Blade tip
+  [[0, 6], [0, 7]].forEach(([r, c]) => { m[`${r},${c}`] = color; });
+  [[1, 6], [1, 7]].forEach(([r, c]) => { m[`${r},${c}`] = color; });
+  [[2, 6], [2, 7]].forEach(([r, c]) => { m[`${r},${c}`] = color; });
+  [[3, 6], [3, 7]].forEach(([r, c]) => { m[`${r},${c}`] = color; });
+  [[4, 6], [4, 7]].forEach(([r, c]) => { m[`${r},${c}`] = color; });
+  [[5, 6], [5, 7]].forEach(([r, c]) => { m[`${r},${c}`] = color; });
+  [[6, 6], [6, 7]].forEach(([r, c]) => { m[`${r},${c}`] = color; });
+  [[7, 6], [7, 7]].forEach(([r, c]) => { m[`${r},${c}`] = color; });
+  // Crossguard
+  [[8, 3], [8, 4], [8, 5], [8, 6], [8, 7], [8, 8], [8, 9], [8, 10]].forEach(([r, c]) => { m[`${r},${c}`] = "#ef9f27"; });
+  [[9, 3], [9, 4], [9, 5], [9, 6], [9, 7], [9, 8], [9, 9], [9, 10]].forEach(([r, c]) => { m[`${r},${c}`] = "#ef9f27"; });
+  // Handle
+  [[10, 6], [10, 7]].forEach(([r, c]) => { m[`${r},${c}`] = "#ba7517"; });
+  [[11, 6], [11, 7]].forEach(([r, c]) => { m[`${r},${c}`] = "#ba7517"; });
+  [[12, 6], [12, 7]].forEach(([r, c]) => { m[`${r},${c}`] = "#ba7517"; });
+  // Pommel
+  [[13, 5], [13, 6], [13, 7], [13, 8]].forEach(([r, c]) => { m[`${r},${c}`] = "#ef9f27"; });
+  // Blade highlight
+  [[2, 6], [3, 6], [4, 6], [5, 6], [6, 6]].forEach(([r, c]) => { m[`${r},${c}`] = "#ffffff"; });
+  return m;
+}
+
+function buildAlienPixels(color: string): PixelMap {
+  const m: PixelMap = {};
+  // Antennae
+  [[0, 4], [0, 9]].forEach(([r, c]) => { m[`${r},${c}`] = color; });
+  [[1, 3], [1, 4], [1, 9], [1, 10]].forEach(([r, c]) => { m[`${r},${c}`] = color; });
+  // Head
+  [[2, 3], [2, 4], [2, 5], [2, 6], [2, 7], [2, 8], [2, 9], [2, 10]].forEach(([r, c]) => { m[`${r},${c}`] = color; });
+  [[3, 2], [3, 3], [3, 4], [3, 5], [3, 6], [3, 7], [3, 8], [3, 9], [3, 10], [3, 11]].forEach(([r, c]) => { m[`${r},${c}`] = color; });
+  // Eyes
+  [[3, 4], [3, 5], [3, 8], [3, 9]].forEach(([r, c]) => { m[`${r},${c}`] = "#ffffff"; });
+  // Body
+  [[4, 2], [4, 3], [4, 4], [4, 5], [4, 6], [4, 7], [4, 8], [4, 9], [4, 10], [4, 11]].forEach(([r, c]) => { m[`${r},${c}`] = color; });
+  [[5, 1], [5, 2], [5, 3], [5, 4], [5, 5], [5, 6], [5, 7], [5, 8], [5, 9], [5, 10], [5, 11], [5, 12]].forEach(([r, c]) => { m[`${r},${c}`] = color; });
+  [[6, 1], [6, 2], [6, 3], [6, 4], [6, 5], [6, 6], [6, 7], [6, 8], [6, 9], [6, 10], [6, 11], [6, 12]].forEach(([r, c]) => { m[`${r},${c}`] = color; });
+  // Arms
+  [[5, 0], [6, 0]].forEach(([r, c]) => { m[`${r},${c}`] = color; });
+  [[5, 13], [6, 13]].forEach(([r, c]) => { m[`${r},${c}`] = color; });
+  // Lower body
+  [[7, 3], [7, 4], [7, 5], [7, 6], [7, 7], [7, 8], [7, 9], [7, 10]].forEach(([r, c]) => { m[`${r},${c}`] = color; });
+  [[8, 3], [8, 4], [8, 5], [8, 6], [8, 7], [8, 8], [8, 9], [8, 10]].forEach(([r, c]) => { m[`${r},${c}`] = color; });
+  // Legs
+  [[9, 3], [9, 4], [9, 5]].forEach(([r, c]) => { m[`${r},${c}`] = color; });
+  [[9, 8], [9, 9], [9, 10]].forEach(([r, c]) => { m[`${r},${c}`] = color; });
+  [[10, 2], [10, 3], [10, 4]].forEach(([r, c]) => { m[`${r},${c}`] = color; });
+  [[10, 9], [10, 10], [10, 11]].forEach(([r, c]) => { m[`${r},${c}`] = color; });
+  [[11, 2], [11, 3]].forEach(([r, c]) => { m[`${r},${c}`] = color; });
+  [[11, 10], [11, 11]].forEach(([r, c]) => { m[`${r},${c}`] = color; });
+  return m;
+}
+
+function buildCherryPixels(color: string): PixelMap {
+  const m: PixelMap = {};
+  // Stems
+  [[0, 6]].forEach(([r, c]) => { m[`${r},${c}`] = "#639922"; });
+  [[1, 5], [1, 6], [1, 7]].forEach(([r, c]) => { m[`${r},${c}`] = "#639922"; });
+  [[2, 4], [2, 5], [2, 8], [2, 9]].forEach(([r, c]) => { m[`${r},${c}`] = "#639922"; });
+  // Left cherry
+  [[3, 2], [3, 3], [3, 4], [3, 5]].forEach(([r, c]) => { m[`${r},${c}`] = color; });
+  [[4, 1], [4, 2], [4, 3], [4, 4], [4, 5]].forEach(([r, c]) => { m[`${r},${c}`] = color; });
+  [[5, 1], [5, 2], [5, 3], [5, 4], [5, 5]].forEach(([r, c]) => { m[`${r},${c}`] = color; });
+  [[6, 1], [6, 2], [6, 3], [6, 4], [6, 5]].forEach(([r, c]) => { m[`${r},${c}`] = color; });
+  [[7, 2], [7, 3], [7, 4], [7, 5]].forEach(([r, c]) => { m[`${r},${c}`] = color; });
+  [[8, 3], [8, 4]].forEach(([r, c]) => { m[`${r},${c}`] = color; });
+  // Right cherry
+  [[3, 8], [3, 9], [3, 10], [3, 11]].forEach(([r, c]) => { m[`${r},${c}`] = color; });
+  [[4, 8], [4, 9], [4, 10], [4, 11], [4, 12]].forEach(([r, c]) => { m[`${r},${c}`] = color; });
+  [[5, 8], [5, 9], [5, 10], [5, 11], [5, 12]].forEach(([r, c]) => { m[`${r},${c}`] = color; });
+  [[6, 8], [6, 9], [6, 10], [6, 11], [6, 12]].forEach(([r, c]) => { m[`${r},${c}`] = color; });
+  [[7, 8], [7, 9], [7, 10], [7, 11]].forEach(([r, c]) => { m[`${r},${c}`] = color; });
+  [[8, 9], [8, 10]].forEach(([r, c]) => { m[`${r},${c}`] = color; });
+  // Highlights
+  [[4, 2], [5, 2]].forEach(([r, c]) => { m[`${r},${c}`] = "#ffffff"; });
+  [[4, 9], [5, 9]].forEach(([r, c]) => { m[`${r},${c}`] = "#ffffff"; });
+  // Leaf
+  [[1, 7], [2, 7], [2, 8]].forEach(([r, c]) => { m[`${r},${c}`] = "#639922"; });
+  return m;
+}
+
 export const PIXEL_PRESETS: Record<string, PixelMap> = {
   ghost_red: buildGhostPixels("#e24b4a"),
-  ghost_blue: buildGhostPixels("#378add"),
-  ghost_purple: buildGhostPixels("#7f77dd"),
-  ghost_teal: buildGhostPixels("#1d9e75"),
   ghost_mouth: buildGhostMouthPixels("#378add"),
   heart: buildHeartPixels("#e24b4a"),
   star: buildStarPixels("#ef9f27"),
@@ -959,6 +1149,14 @@ export const PIXEL_PRESETS: Record<string, PixelMap> = {
   arrow: buildArrowPixels("#e24b4a"),
   diamond: buildDiamondPixels("#378add"),
   smiley: buildSmileyPixels("#ef9f27"),
+  potion: buildPotionPixels("#7f77dd"),
+  mushroom: buildMushroomPixels("#e24b4a"),
+  crown: buildCrownPixels("#ef9f27"),
+  lightning: buildLightningPixels("#ef9f27"),
+  flame: buildFlamePixels("#e24b4a"),
+  sword: buildSwordPixels("#c0c0c0"),
+  alien: buildAlienPixels("#1d9e75"),
+  cherry: buildCherryPixels("#e24b4a"),
 };
 
 export const ANIMATION_PRESETS: AnimPreset[] = [

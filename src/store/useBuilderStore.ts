@@ -28,6 +28,9 @@ interface BuilderActions {
   setExportOpen: (open: boolean) => void;
   setCanvasZoom: (zoom: number) => void;
   toggleFullscreen: () => void;
+  replaceColor: (fromColor: string, toColor: string) => void;
+  undo: () => void;
+  redo: () => void;
 }
 
 const DEFAULT_PARAMS: AnimParams = {
@@ -37,6 +40,8 @@ const DEFAULT_PARAMS: AnimParams = {
   rotation: 0,
   timing: "steps(2)",
 };
+
+const MAX_HISTORY = 50;
 
 export const useBuilderStore = create<BuilderState & BuilderActions>((set, get) => ({
   gridSize: 14,
@@ -54,11 +59,31 @@ export const useBuilderStore = create<BuilderState & BuilderActions>((set, get) 
   canvasZoom: 1,
   isFullscreen: false,
 
+  history: [],
+  future: [],
+  prePixels: null,
+
   setTool: (tool) => set({ tool }),
   setDrawColor: (color) => set({ drawColor: color }),
   setFlickerColor: (color) => set({ flickerColor: color }),
-  startDrawing: () => set({ isDrawing: true }),
-  stopDrawing: () => set({ isDrawing: false }),
+
+  startDrawing: () => {
+    const { pixels, prePixels } = get();
+    set({ isDrawing: true, prePixels: prePixels ?? { ...pixels } });
+  },
+
+  stopDrawing: () => {
+    const { prePixels, pixels, history, future } = get();
+    if (prePixels) {
+      const changed = JSON.stringify(prePixels) !== JSON.stringify(pixels);
+      if (changed) {
+        const newHistory = [...history, prePixels].slice(-MAX_HISTORY);
+        set({ isDrawing: false, prePixels: null, history: newHistory, future: [] });
+        return;
+      }
+    }
+    set({ isDrawing: false, prePixels: null });
+  },
 
   setGridSize: (gridSize) => set({ gridSize, pixels: {} }),
 
@@ -81,10 +106,18 @@ export const useBuilderStore = create<BuilderState & BuilderActions>((set, get) 
     }
   },
 
-  clearPixels: () => set({ pixels: {} }),
+  clearPixels: () => {
+    const { pixels, history } = get();
+    const newHistory = [...history, { ...pixels }].slice(-MAX_HISTORY);
+    set({ pixels: {}, history: newHistory, future: [] });
+  },
 
   loadPreset: (name) => {
-    if (PIXEL_PRESETS[name]) set({ pixels: { ...PIXEL_PRESETS[name] } });
+    if (PIXEL_PRESETS[name]) {
+      const { pixels, history } = get();
+      const newHistory = [...history, { ...pixels }].slice(-MAX_HISTORY);
+      set({ pixels: { ...PIXEL_PRESETS[name] }, history: newHistory, future: [] });
+    }
   },
 
   applyAnimPreset: (name) => {
@@ -107,4 +140,34 @@ export const useBuilderStore = create<BuilderState & BuilderActions>((set, get) 
   setCanvasZoom: (zoom) =>     set({ canvasZoom: Math.max(0.5, Math.min(1, zoom)) }),
 
   toggleFullscreen: () => set((state) => ({ isFullscreen: !state.isFullscreen })),
+
+  replaceColor: (fromColor, toColor) => {
+    const { pixels, history } = get();
+    const from = fromColor.toLowerCase();
+    const to = toColor.toLowerCase();
+    const next: Record<string, string> = {};
+    for (const [key, color] of Object.entries(pixels)) {
+      next[key] = color.toLowerCase() === from ? to : color;
+    }
+    const newHistory = [...history, { ...pixels }].slice(-MAX_HISTORY);
+    set({ pixels: next, history: newHistory, future: [] });
+  },
+
+  undo: () => {
+    const { history, pixels, future } = get();
+    if (history.length === 0) return;
+    const prev = history[history.length - 1];
+    const newHistory = history.slice(0, -1);
+    const newFuture = [...future, { ...pixels }];
+    set({ pixels: prev, history: newHistory, future: newFuture });
+  },
+
+  redo: () => {
+    const { future, pixels, history } = get();
+    if (future.length === 0) return;
+    const next = future[future.length - 1];
+    const newFuture = future.slice(0, -1);
+    const newHistory = [...history, { ...pixels }];
+    set({ pixels: next, history: newHistory, future: newFuture });
+  },
 }));

@@ -36,10 +36,29 @@ function BuilderPage() {
   const pixelCount = useBuilderStore((s) => Object.keys(s.pixels).length);
   const activePreset = useBuilderStore((s) => s.activePreset);
   const { theme, toggleTheme } = useTheme();
+  const undo = useBuilderStore((s) => s.undo);
+  const redo = useBuilderStore((s) => s.redo);
 
   useEffect(() => {
     loadPreset("ghost_red");
   }, [loadPreset]);
+
+  useEffect(() => {
+    const handler = (e: KeyboardEvent) => {
+      if ((e.ctrlKey || e.metaKey) && e.key === "z" && !e.shiftKey) {
+        e.preventDefault();
+        undo();
+      } else if ((e.ctrlKey || e.metaKey) && e.key === "z" && e.shiftKey) {
+        e.preventDefault();
+        redo();
+      } else if ((e.ctrlKey || e.metaKey) && e.key === "y") {
+        e.preventDefault();
+        redo();
+      }
+    };
+    window.addEventListener("keydown", handler);
+    return () => window.removeEventListener("keydown", handler);
+  }, [undo, redo]);
 
   return (
     <div

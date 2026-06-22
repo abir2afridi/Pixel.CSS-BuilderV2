@@ -63,4 +63,7 @@ export interface BuilderState {
   isDrawing: boolean;
   canvasZoom: number;
   isFullscreen: boolean;
+  history: PixelMap[];
+  future: PixelMap[];
+  prePixels: PixelMap | null;
 }
