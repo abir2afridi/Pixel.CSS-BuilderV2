@@ -1,9 +1,9 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useCallback } from "react";
 import { useBuilderStore } from "@/store/useBuilderStore";
 import { generateKeyframes, getAnimationName } from "@/lib/animationEngine";
 import { getBottomRows } from "@/lib/pixelUtils";
 
-export function PreviewPane() {
+export function FullscreenPreview() {
   const pixels = useBuilderStore((s) => s.pixels);
   const gridSize = useBuilderStore((s) => s.gridSize);
   const activePreset = useBuilderStore((s) => s.activePreset);
@@ -12,26 +12,10 @@ export function PreviewPane() {
   const previewDarkBg = useBuilderStore((s) => s.previewDarkBg);
   const togglePreviewBg = useBuilderStore((s) => s.togglePreviewBg);
   const toggleFullscreen = useBuilderStore((s) => s.toggleFullscreen);
+  const previewScale = useBuilderStore((s) => s.previewScale);
+  const setPreviewScale = useBuilderStore((s) => s.setPreviewScale);
 
-  const containerRef = useRef<HTMLDivElement>(null);
-  const [autoScale, setAutoScale] = useState(3);
-
-  useEffect(() => {
-    const el = containerRef.current;
-    if (!el) return;
-    const obs = new ResizeObserver((entries) => {
-      for (const entry of entries) {
-        const w = entry.contentRect.width;
-        const maxCell = Math.floor((w - 48) / gridSize);
-        const s = Math.max(1, Math.min(6, Math.floor(maxCell / 10)));
-        setAutoScale(s || 1);
-      }
-    });
-    obs.observe(el);
-    return () => obs.disconnect();
-  }, [gridSize]);
-
-  const scale = autoScale;
+  const scale = previewScale;
   const cell = 10 * scale;
   const dur = `${animParams.speed}ms`;
   const tim = animParams.timing;
@@ -43,64 +27,81 @@ export function PreviewPane() {
     ? { animation: `${animName} ${dur} infinite ${tim}` }
     : {};
 
+  const handleEsc = useCallback(
+    (e: KeyboardEvent) => {
+      if (e.key === "Escape") toggleFullscreen();
+    },
+    [toggleFullscreen],
+  );
+
+  useEffect(() => {
+    window.addEventListener("keydown", handleEsc);
+    return () => window.removeEventListener("keydown", handleEsc);
+  }, [handleEsc]);
+
   return (
-    <div ref={containerRef}>
+    <div className="fixed inset-0 z-[9999] flex flex-col bg-black">
       <style>{keyframes}</style>
 
-      {/* Section label + controls */}
-      <div className="flex items-center justify-between mb-2.5 px-1">
-        <span
-          className="text-[10px] uppercase tracking-[0.18em] text-builder-text-muted flex items-center gap-1.5"
-          style={{ fontFamily: "JetBrains Mono, monospace" }}
-        >
-          <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 shadow-[0_0_8px] shadow-emerald-500/80 animate-pulse" />
-          Live Preview
+      {/* Top bar */}
+      <div className="h-12 flex items-center justify-between px-5 bg-black/80 backdrop-blur-md border-b border-white/10 shrink-0">
+        <span className="text-xs text-white/60" style={{ fontFamily: "JetBrains Mono, monospace" }}>
+          Fullscreen Preview
         </span>
-        <div className="flex items-center gap-1.5">
-          <span
-            className="text-[10px] text-builder-text-muted"
-            style={{ fontFamily: "JetBrains Mono, monospace" }}
-          >
-            {scale}×
-          </span>
+        <div className="flex items-center gap-2">
+          {/* Scale selector */}
+          <div className="flex items-center gap-0.5 p-0.5 rounded-lg bg-white/10 border border-white/10">
+            {([2, 3, 4, 5, 6] as const).map((s) => (
+              <button
+                key={s}
+                onClick={() => setPreviewScale(s)}
+                className={`px-2.5 py-1 text-[11px] rounded-md transition-all ${
+                  scale === s
+                    ? "bg-red-500/30 text-red-300 ring-1 ring-red-500/50"
+                    : "text-white/50 hover:text-white/80 hover:bg-white/10"
+                }`}
+                style={{ fontFamily: "JetBrains Mono, monospace" }}
+              >
+                {s}×
+              </button>
+            ))}
+          </div>
           <button
             onClick={togglePreviewBg}
-            className="px-2.5 py-1 text-[10px] rounded-lg text-builder-text-muted border border-builder-border bg-builder-surface-inset hover:border-builder-border-strong hover:text-builder-text transition-all"
+            className="px-2.5 py-1 text-[11px] rounded-lg text-white/50 border border-white/10 bg-white/5 hover:border-white/20 hover:text-white/80 transition-all"
             style={{ fontFamily: "JetBrains Mono, monospace" }}
           >
             {previewDarkBg ? "light" : "dark"}
           </button>
           <button
             onClick={toggleFullscreen}
-            className="px-2.5 py-1 text-[10px] rounded-lg text-builder-text-muted border border-builder-border bg-builder-surface-inset hover:border-builder-border-strong hover:text-builder-text transition-all"
+            className="px-3 py-1 text-[11px] rounded-lg text-white/50 border border-white/10 bg-white/5 hover:border-red-500/40 hover:text-red-300 transition-all"
             style={{ fontFamily: "JetBrains Mono, monospace" }}
           >
-            ⛶ full
+            ✕ close
           </button>
         </div>
       </div>
 
-      {/* Card frame */}
-      <div className="rounded-2xl border border-builder-border bg-gradient-to-b from-builder-surface/60 to-builder-surface/30 backdrop-blur-md shadow-[0_8px_32px_-8px_rgba(0,0,0,0.15),inset_0_1px_0_rgba(255,255,255,0.04)] dark:shadow-[0_8px_32px_-8px_rgba(0,0,0,0.5),inset_0_1px_0_rgba(255,255,255,0.05)] transition-colors">
-        {/* Preview viewport */}
+      {/* Preview area */}
+      <div className="flex-1 flex items-center justify-center overflow-hidden">
         <div
-          className="relative flex items-center justify-center mx-4 mt-4 rounded-xl overflow-hidden ring-1 ring-inset ring-builder-border/50"
+          className="relative flex items-center justify-center rounded-2xl overflow-hidden"
           style={{
             background: previewDarkBg
               ? "radial-gradient(circle at 50% 40%, #1a0a0a 0%, #000 70%)"
-              : "radial-gradient(circle at 50% 40%, #f0f0f3 0%, #dcdce0 70%)",
-            minHeight: "180px",
+              : "radial-gradient(circle at 50% 40%, #222 0%, #111 70%)",
           }}
         >
           {/* dot grid overlay */}
           <div
-            className="absolute inset-0 opacity-[0.06] pointer-events-none"
+            className="absolute inset-0 opacity-[0.04] pointer-events-none"
             style={{
               backgroundImage: "radial-gradient(#fff 1px, transparent 1px)",
               backgroundSize: "16px 16px",
             }}
           />
-          <div className="relative inline-block py-6">
+          <div className="relative inline-block p-10">
             <div
               style={{
                 display: "grid",
@@ -108,7 +109,7 @@ export function PreviewPane() {
                 gridTemplateRows: `repeat(${gridSize}, ${cell}px)`,
                 gap: 0,
                 imageRendering: "pixelated",
-                filter: "drop-shadow(0 0 20px rgba(226,75,74,0.3))",
+                filter: "drop-shadow(0 0 30px rgba(226,75,74,0.4))",
                 ...bodyStyle,
               }}
             >
@@ -145,7 +146,7 @@ export function PreviewPane() {
                 height: cell * 0.55,
                 background: "rgba(0,0,0,0.55)",
                 borderRadius: "50%",
-                filter: "blur(8px)",
+                filter: "blur(12px)",
                 bottom: -cell * 0.9,
                 left: "50%",
                 transform: "translateX(-50%)",
@@ -154,20 +155,22 @@ export function PreviewPane() {
             />
           </div>
         </div>
+      </div>
 
-        {/* Footer info bar */}
-        <div
-          className="flex items-center justify-between px-5 py-2.5 text-[10px] text-builder-text-muted border-t border-builder-border/50"
-          style={{ fontFamily: "JetBrains Mono, monospace" }}
-        >
-          <span className="flex items-center gap-2">
-            <span className="w-1 h-1 rounded-full bg-builder-text-muted/50" />
-            {(animParams.speed / 1000).toFixed(2)}s · {animParams.timing}
-          </span>
-          <span className="flex items-center gap-2">
-            <span className="text-builder-text">{Object.keys(pixels).length}</span> pixels
-          </span>
-        </div>
+      {/* Bottom info bar */}
+      <div
+        className="h-10 flex items-center justify-center gap-6 px-5 bg-black/80 backdrop-blur-md border-t border-white/10 shrink-0 text-[11px] text-white/40"
+        style={{ fontFamily: "JetBrains Mono, monospace" }}
+      >
+        <span>
+          {gridSize}×{gridSize} · {Object.keys(pixels).length} pixels
+        </span>
+        <span className="text-white/20">·</span>
+        <span>
+          {(animParams.speed / 1000).toFixed(2)}s · {animParams.timing}
+        </span>
+        <span className="text-white/20">·</span>
+        <span className="text-red-400/60">{activePreset}</span>
       </div>
     </div>
   );

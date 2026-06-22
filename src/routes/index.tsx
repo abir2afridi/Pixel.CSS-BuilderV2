@@ -6,6 +6,7 @@ import { PixelCanvas } from "@/components/builder/PixelCanvas";
 import { PreviewPane } from "@/components/builder/PreviewPane";
 import { ControlsPanel } from "@/components/builder/ControlsPanel";
 import { ExportDrawer } from "@/components/builder/ExportDrawer";
+import { FullscreenPreview } from "@/components/builder/FullscreenPreview";
 import { useTheme } from "@/hooks/use-theme";
 
 export const Route = createFileRoute("/")({
@@ -30,6 +31,7 @@ function BuilderPage() {
   const loadPreset = useBuilderStore((s) => s.loadPreset);
   const setExportOpen = useBuilderStore((s) => s.setExportOpen);
   const exportOpen = useBuilderStore((s) => s.exportOpen);
+  const isFullscreen = useBuilderStore((s) => s.isFullscreen);
   const gridSize = useBuilderStore((s) => s.gridSize);
   const pixelCount = useBuilderStore((s) => Object.keys(s.pixels).length);
   const activePreset = useBuilderStore((s) => s.activePreset);
@@ -141,6 +143,7 @@ function BuilderPage() {
       </footer>
 
       {exportOpen && <ExportDrawer />}
+      {isFullscreen && <FullscreenPreview />}
     </div>
   );
 }

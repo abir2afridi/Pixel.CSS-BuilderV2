@@ -57,8 +57,10 @@ export interface BuilderState {
   activePreset: AnimPresetName;
   animParams: AnimParams;
   layers: LayerState;
-  previewScale: 2 | 3 | 4;
+  previewScale: 2 | 3 | 4 | 5 | 6;
   previewDarkBg: boolean;
   exportOpen: boolean;
   isDrawing: boolean;
+  canvasZoom: number;
+  isFullscreen: boolean;
 }

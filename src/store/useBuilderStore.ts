@@ -23,9 +23,11 @@ interface BuilderActions {
   applyAnimPreset: (name: AnimPresetName) => void;
   updateAnimParams: (params: Partial<AnimParams>) => void;
   toggleLayer: (layer: keyof LayerState) => void;
-  setPreviewScale: (scale: 2 | 3 | 4) => void;
+  setPreviewScale: (scale: 2 | 3 | 4 | 5 | 6) => void;
   togglePreviewBg: () => void;
   setExportOpen: (open: boolean) => void;
+  setCanvasZoom: (zoom: number) => void;
+  toggleFullscreen: () => void;
 }
 
 const DEFAULT_PARAMS: AnimParams = {
@@ -49,6 +51,8 @@ export const useBuilderStore = create<BuilderState & BuilderActions>((set, get) 
   previewDarkBg: false,
   exportOpen: false,
   isDrawing: false,
+  canvasZoom: 1,
+  isFullscreen: false,
 
   setTool: (tool) => set({ tool }),
   setDrawColor: (color) => set({ drawColor: color }),
@@ -99,4 +103,8 @@ export const useBuilderStore = create<BuilderState & BuilderActions>((set, get) 
   setPreviewScale: (scale) => set({ previewScale: scale }),
   togglePreviewBg: () => set((state) => ({ previewDarkBg: !state.previewDarkBg })),
   setExportOpen: (open) => set({ exportOpen: open }),
+
+  setCanvasZoom: (zoom) =>     set({ canvasZoom: Math.max(0.5, Math.min(1, zoom)) }),
+
+  toggleFullscreen: () => set((state) => ({ isFullscreen: !state.isFullscreen })),
 }));
